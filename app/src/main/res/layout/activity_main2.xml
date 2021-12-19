@@ -8,7 +8,6 @@
 <com.blog.flowlayout.FlowContentLayout
     android:id="@+id/flowlayout"
     android:layout_width="match_parent"
-    android:background="#00ff00"
     android:layout_height="wrap_content">
 
 </com.blog.flowlayout.FlowContentLayout>

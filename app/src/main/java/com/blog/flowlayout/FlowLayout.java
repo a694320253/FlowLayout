@@ -1,6 +1,8 @@
 package com.blog.flowlayout;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -65,6 +67,9 @@ public class FlowLayout extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (mFlowContentLayout!=null){
+            Log.d("TAGTAG","onMeasure");
+        }
         //获取mode 和 size
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -123,8 +128,15 @@ public class FlowLayout extends ViewGroup {
                     lineHeight = childHeight;
                     if(mFlowContentLayout != null){
                         if(foldState && line > MIN_LINE){
-                            Log.d("TAGTAG",beforewh+"--beforelineWidth---"+beforelineWidth+"--"+widthSize);
-                            callBack(foldState,((beforelineWidth - beforewh+mFlowContentLayout.getUpViewWidth() > widthSize)?i-2:i-1), true,lineWidth);
+//                            Log.d("TAGTAG",beforewh+"--beforelineWidth---"+beforelineWidth+"--"+widthSize);
+                            if (beforelineWidth+mHorizontalSpacing+mFlowContentLayout.getUpViewWidth()<=widthSize){
+                                callBack(foldState,i, true,lineWidth);
+                            }else {
+                                callBack(foldState,((beforelineWidth - beforewh+mFlowContentLayout.getUpViewWidth() > widthSize)?i-2:i-1), true,lineWidth);
+                            }
+                            if (mFlowContentLayout!=null){
+                                Log.d("TAGTAG","break");
+                            }
                             break;
                         }
                     }
@@ -141,6 +153,9 @@ public class FlowLayout extends ViewGroup {
                 height += lineHeight;
             }
             beforewh=childWidth;
+        }
+        if (mFlowContentLayout!=null){
+            Log.d("TAGTAG","-------");
         }
         //根据计算的值重新设置
         if(mFlowContentLayout == null){
@@ -263,12 +278,16 @@ public class FlowLayout extends ViewGroup {
         linearLayout.setPadding(0,IntExtensionsKt.dp2px(8),0,0);
         linearLayout.setLayoutParams(layoutParams);
         TextView tv = new TextView(getContext());
-//        tv.setPadding(IntExtensionsKt.dp2px(12), IntExtensionsKt.dp2px(8), IntExtensionsKt.dp2px(12), IntExtensionsKt.dp2px(8));
+        tv.setPadding(IntExtensionsKt.dp2px(6), IntExtensionsKt.dp2px(2), IntExtensionsKt.dp2px(6), IntExtensionsKt.dp2px(2));
         tv.setText(s);
         tv.setSingleLine();
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+        tv.setBackgroundResource(R.drawable.myshape);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,13);
         tv.setTextColor(getResources().getColor(R.color.ff666666));
         tv.setEllipsize(TextUtils.TruncateAt.END);
+        GradientDrawable drawable= (GradientDrawable) tv.getBackground();
+        drawable.setStroke(1, Color.parseColor("#00f00f"));
+        drawable.setColor(Color.YELLOW);
         linearLayout.addView(tv,new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
         addView(linearLayout,layoutParams);
     }
