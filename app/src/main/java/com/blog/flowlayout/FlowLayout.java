@@ -20,13 +20,12 @@ public class FlowLayout extends ViewGroup {
     private int mHorizontalSpacing =IntExtensionsKt.dp2px(8);
 
     private static final int MAX_LINE = Integer.MAX_VALUE;//从0开始计数
-    private static final int MIN_LINE = 1;//从0开始计数
+    private static final int MIN_LINE = 0;//从0开始计数
     private FlowContentLayout mFlowContentLayout;
     private boolean foldState = true;
     private View upFoldView;
     private View downFoldView;
     private int mWidth;
-    private int textViewHeight;
 
     public FlowLayout(Context context) {
         this(context, null);
@@ -154,7 +153,7 @@ public class FlowLayout extends ViewGroup {
         if(foldState && (line >= 0 && line <= MIN_LINE)){
             callBack(foldState,getChildCount(),false,lineWidth);
         }
-        if(!foldState && (line >= 0 && line <= MAX_LINE)){
+        if(!foldState && line >= 0){
             if(mFlowContentLayout != null){
                 int upViewWidth = mFlowContentLayout.getUpViewWidth() + mHorizontalSpacing;
                 if(lineWidth > (mWidth - upViewWidth) && line == MAX_LINE){
@@ -192,9 +191,9 @@ public class FlowLayout extends ViewGroup {
         int childWidth, childHeight;
         //需要加上top padding
         int top = getPaddingTop();
-        final int[] wh = getMaxWidthHeight();
+//        final int[] wh = getMaxWidthHeight();
         int lineHeight = 0;
-        int line = 0;
+//        int line = 0;
         //左对齐
         //左侧需要先加上左边的padding
         int left = getPaddingLeft();
@@ -215,7 +214,7 @@ public class FlowLayout extends ViewGroup {
             } else {
                 //判断是否需要换行
                 if (left + mHorizontalSpacing + childWidth > layoutWidth + getPaddingLeft()) {
-                    line++;
+//                    line++;
                     //重新起行
                     left = getPaddingLeft();
                     top = top + lineHeight;
@@ -290,7 +289,6 @@ public class FlowLayout extends ViewGroup {
         tv.setBackgroundResource(R.drawable.abc_vector_test);
         linearLayout.addView(tv,new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
         addView(linearLayout,layoutParams);
-        textViewHeight = 100;
     }
 }
 
