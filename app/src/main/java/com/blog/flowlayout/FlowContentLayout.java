@@ -95,7 +95,10 @@ public class FlowContentLayout extends RelativeLayout {
      * @param lineWidthUsed
      */
     public void foldIndex(boolean foldState, int index, boolean flag, int lineWidthUsed) {
+
+        Log.d("tagtag",index+"---foldIndex--"+flag);
         if(mLastIndex != index){//防止多次调用
+            Log.d("tagtag","---2222222--");
             mLastIndex = index;
             //添加外部真正的布局
             if(flag){
@@ -119,7 +122,7 @@ public class FlowContentLayout extends RelativeLayout {
         if(upView != null){
             int measuredWidth = upView.getMeasuredWidth();
             Log.d("tagtag","--"+measuredWidth);
-            return measuredWidth;
+            return 138;
         }
         return 0;
     }

@@ -3,6 +3,7 @@ package com.blog.flowlayout;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ public class FlowLayout extends ViewGroup {
     /**
      * 水平距离
      */
-    private int mHorizontalSpacing =IntExtensionsKt.dp2px(8);
+    private int mHorizontalSpacing =10;
 
     private static final int MAX_LINE = Integer.MAX_VALUE;//从0开始计数
     private static final int MIN_LINE = 0;//从0开始计数
@@ -87,8 +88,8 @@ public class FlowLayout extends ViewGroup {
 
         //测量子View
         measureChildren(widthMeasureSpec, heightMeasureSpec);
-
-        int[] wh = null;
+        int beforewh = 0;
+        int beforelineWidth = 0;
         int childWidth, childHeight;
         //行数
         int line = 0;
@@ -112,6 +113,7 @@ public class FlowLayout extends ViewGroup {
                 if (lineWidth + mHorizontalSpacing + childWidth > widthSize) {
                     line++;//行数增加
                     // 取最大的宽度
+                    beforelineWidth=lineWidth;
                     width = Math.max(lineWidth, width);
                     //重新开启新行，开始记录
                     lineWidth = getPaddingLeft() + getPaddingRight() + childWidth;
@@ -121,10 +123,8 @@ public class FlowLayout extends ViewGroup {
                     lineHeight = childHeight;
                     if(mFlowContentLayout != null){
                         if(foldState && line > MIN_LINE){
-                            callBack(foldState,i-1, true,lineWidth);
-                            break;
-                        }else if(!foldState && line > MAX_LINE){
-                            callBack(foldState,i-1, true,lineWidth);
+                            Log.d("TAGTAG",beforewh+"--beforelineWidth---"+beforelineWidth+"--"+widthSize);
+                            callBack(foldState,((beforelineWidth - beforewh+mFlowContentLayout.getUpViewWidth() > widthSize)?i-2:i-1), true,lineWidth);
                             break;
                         }
                     }
@@ -140,6 +140,7 @@ public class FlowLayout extends ViewGroup {
                 width = Math.max(width, lineWidth);
                 height += lineHeight;
             }
+            beforewh=childWidth;
         }
         //根据计算的值重新设置
         if(mFlowContentLayout == null){
@@ -230,24 +231,6 @@ public class FlowLayout extends ViewGroup {
         }
     }
 
-    /**
-     * 取最大的子view的宽度和高度
-     *
-     * @return
-     */
-    private int[] getMaxWidthHeight() {
-        int maxWidth = 0;
-        int maxHeight = 0;
-        for (int i = 0, count = getChildCount(); i < count; i++) {
-            final View view = getChildAt(i);
-            if (view.getVisibility() == GONE) {
-                continue;
-            }
-            maxWidth = Math.max(maxWidth, view.getMeasuredWidth());
-            maxHeight = Math.max(maxHeight, view.getMeasuredHeight());
-        }
-        return new int[]{maxWidth, maxHeight};
-    }
 
     public void addViews(List<String> list){
         removeAllViews();
@@ -280,13 +263,12 @@ public class FlowLayout extends ViewGroup {
         linearLayout.setPadding(0,IntExtensionsKt.dp2px(8),0,0);
         linearLayout.setLayoutParams(layoutParams);
         TextView tv = new TextView(getContext());
-        tv.setPadding(IntExtensionsKt.dp2px(12), IntExtensionsKt.dp2px(8), IntExtensionsKt.dp2px(12), IntExtensionsKt.dp2px(8));
+//        tv.setPadding(IntExtensionsKt.dp2px(12), IntExtensionsKt.dp2px(8), IntExtensionsKt.dp2px(12), IntExtensionsKt.dp2px(8));
         tv.setText(s);
         tv.setSingleLine();
         tv.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
         tv.setTextColor(getResources().getColor(R.color.ff666666));
         tv.setEllipsize(TextUtils.TruncateAt.END);
-        tv.setBackgroundResource(R.drawable.abc_vector_test);
         linearLayout.addView(tv,new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
         addView(linearLayout,layoutParams);
     }
